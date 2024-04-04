@@ -17,74 +17,13 @@ const Button = ({handleClick, text}) => {
     </div>
   )
 }
-const StaticsLine = (props) => {
-  return (
-    <>
-      <tr>
-        <td>{props.text}</td>
-        <td>{props.value}</td>
-      </tr>
-    </>
-  )
-}
-
-const Statistcs = ({good, neutral, bad, total, avarage, positive}) => {
-  
-  if(total === 0){
-    return <h1> No feedback given</h1>
-  }
-  return(
-    <>
-      <h1>Statics</h1>
-
-      <table>
-        <tbody>
-          <StaticsLine text={'Good'} value = {good} />
-          <StaticsLine text={'Neutral'} value ={neutral} />
-          <StaticsLine text={'Bad'} value = {bad} />
-          <StaticsLine text={'Total'} value = {total} />
-          <StaticsLine text={'Avarage'} value = {avarage} />
-          <StaticsLine text={'Positive'} value = {positive} />
-        </tbody>
-      </table>
-    </>
-  )
-}
 
 const App = () => {
 
-  const [good, useGood] = useState(0)
-  const [neutral, useNeutral] = useState(0)
-  const [bad, useBad] = useState(0)
-  const [total, useTotal] = useState(0)
-  const [avarage, useAvarage] = useState(0)
-  const [positive, usePositive] = useState(0)
   const [randomNumber, setRandomNumber] = useState(null)
   const [points, setPoints ] = useState({0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0})
+  const [position, setPosition] = useState(null)
 
-  const handleGood = () =>{
-    useGood(good+1)
-    const goodUpdate = good +1
-    useTotal(goodUpdate + neutral + bad)
-    const totalUpdate = goodUpdate + neutral + bad
-    useAvarage((goodUpdate - bad) / totalUpdate)
-    console.log(totalUpdate)
-    usePositive((goodUpdate / totalUpdate) * 100)
-  } 
-   
-  const handleNeutral = () =>{
-    useNeutral(neutral+1)
-    const neutralUpdate = neutral +1
-    useTotal(good + neutralUpdate + bad)
-  } 
-  const handleBad = () =>{
-    useBad(bad+1)
-    const badUpdate = bad +1 
-    useTotal(good + neutral + badUpdate)
-    const totalUpdate = good + neutral + badUpdate
-    useAvarage((good - badUpdate) / totalUpdate)
-    usePositive((good / totalUpdate) * 100)
-  } 
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -100,25 +39,34 @@ const App = () => {
     const max = 7 
     const randomNumber2 = Math.floor(Math.random() * (max - min +1)) + min
     setRandomNumber(randomNumber2)
+    console.log("numero generado... ", randomNumber2)
+
   }
   const savePoints = () => {
-    console.log(randomNumber)
-    const copy = {...points}
-    copy[randomNumber] += 1
-    setPoints(copy)
+    
+    const copyPoints = {...points}
+    copyPoints[randomNumber] += 1
+    setPoints(copyPoints)
+    
+    console.log(copyPoints)
+    
+    const maxValue = Math.max(...Object.values(copyPoints))
+    const maxPosition = Object.keys(copyPoints).find(key => copyPoints[key] === maxValue)
+    setPosition(maxPosition)
+
+    console.log('posicion de la anecdota con mas votos', maxPosition)
+    
   }
 
   //console.log(course.parts)
   return (
     <div>
-      <Header title = {'Give feedback'}/>
-      <Button handleClick={handleGood} text={'Good'} />
-      <Button handleClick={handleNeutral} text={'Neutral'} />
-      <Button handleClick={handleBad} text={'Bad'} />
-      <Statistcs good={good} neutral={neutral} bad={bad} total={total} avarage={avarage} positive={positive} />
+      <h1>Anecdote of the day</h1>
       <h4>{anecdotes[randomNumber]} </h4>
       <Button handleClick={generateRandomNumber} text={'Show Anecdota'} />
       <Button handleClick={savePoints} text={'Votar'} />
+      <h1>Anecdote with most votes</h1>
+      <h4>{anecdotes[position]} </h4>
     </div>
   )
 }
