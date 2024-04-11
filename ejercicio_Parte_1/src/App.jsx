@@ -1,7 +1,9 @@
 import { useState } from "react"
+import { createLogger } from "vite"
 
 const Header = ({title}) => {
   //console.log(title)
+  
   return(
     <>
       <h1>{title}</h1>
